@@ -13,35 +13,34 @@ Desarrollada para proyecto personal
 #include "DcMotor.h"
 #include "Arduino.h"
 
-DcMotor::DcMotor (int pinVelocidad, int pin1, int pin2) { //usamos 3 pines, el pin enable del driver para la velocidad, y los 2 de los motores
+DcMotor::DcMotor (int pinVelocidad, int pin1, int pin2) {	//Indicamos los pines a utilizar.
 
-	_pin1 = pin1;
-	_pin2 = pin2;	
-	_pinVelocidad = pinVelocidad; //Pin de PWM usado
+	_pin1 = pin1;	//Pin 1 de la lógica del puente H.
+	_pin2 = pin2;	//Pin 2 de la lógica del puente H.
+	_pinVelocidad = pinVelocidad;	//Pin enable. Debe utilizarse un pin con PWM.
 
-	pinMode(_pin1, OUTPUT); //ponemos los pines del motor como OUTPUT
+	//Declaramos los tres pines como salidas (OUTPUT).
+	pinMode(_pin1, OUTPUT);
 	pinMode(_pin2, OUTPUT);
-	pinMode(_pinVelocidad, OUTPUT); //tambien ponemos el pin de PWM como OUTPUT, si no usamos el PWM ser� o 5V o 0V
+	pinMode(_pinVelocidad, OUTPUT);
 
 	}
 
-void DcMotor::avanzar(int velocidad) {
+void DcMotor::avanzar(int velocidad) {	//Función para que el motor avance
 
-	if (velocidad >255){
-		velocidad = 255; //con esto la velocidad nunca superara al maximo de la placa		
+	if (velocidad >255){		//Si llega un valor superior al utilizado en PWM en la variable velocidad
+		velocidad = 255;	//cambiamos su valor por el máximo permitido (255).
 	}
-	digitalWrite(_pin1, HIGH); //Al avanzar usamos logica 1-0, donde
+	digitalWrite(_pin1, HIGH);	//Para avanzar definimos como 1-0 la lógica del puente H.
 	digitalWrite(_pin2, LOW);
-	analogWrite(_pinVelocidad, velocidad); //la velocidad va de 0 a 255 (0-> OV, 255->5V)
-						 //y se manda al pin enable del driver
-
-	}
+	analogWrite(_pinVelocidad, velocidad);	//Controlamos la velocidad del motor mediante el Enable del puente H
+	}					//a través del PWM del Arduino.
 
 void DcMotor::parar() {
 
 	digitalWrite(_pin1, LOW); //Para parar dejamos de mandar se�al usando
 	digitalWrite(_pin2, LOW); //la logica 00
-
+	analogWrite(_pinVelocidad, 0); //Desactivamos el pin Enable.
 
 	}
 
